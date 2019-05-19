@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AudioLightSaber : MonoBehaviour
 {
+    private AudioSource audioSource;
     private Vector3 lastPosition;
     private Vector3 velocity;
     private AudioDistortionFilter audioDistortionFilter;
@@ -14,7 +15,7 @@ public class AudioLightSaber : MonoBehaviour
     void Start()
     {
         Vector3 lastPosition = transform.position;
-        audioDistortionFilter = GetComponent<AudioDistortionFilter>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -25,7 +26,7 @@ public class AudioLightSaber : MonoBehaviour
     }
 
     private void CalculateVelocity() {
-        velocity = (transform.position - lastPosition) / Time.deltaTime;
+        velocity = (transform.position - lastPosition) / Time.fixedDeltaTime;
         lastPosition = transform.position;
         if(velocity.magnitude > maxVelocity) {
             maxVelocity = velocity.magnitude;
@@ -33,6 +34,6 @@ public class AudioLightSaber : MonoBehaviour
     }
 
     private void ApplyDistortion() {
-        audioDistortionFilter.distortionLevel = Mathf.Clamp(velocity.magnitude / maxVelocity,0,maxDistortion);
+        audioSource.volume = Mathf.Clamp(velocity.magnitude / maxVelocity,0,maxDistortion);
     }
 }
